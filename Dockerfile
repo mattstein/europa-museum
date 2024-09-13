@@ -1,16 +1,27 @@
-# use a multi-stage build for dependencies
-FROM composer:2 as composer
-COPY composer.json composer.json
-COPY composer.lock composer.lock
-RUN composer install --ignore-platform-reqs --no-interaction --prefer-dist
+FROM serversideup/php:8.3-fpm-nginx
 
-FROM craftcms/nginx:8.2
+ENV PHP_OPCACHE_ENABLE=1
+ENV NGINX_WEBROOT=/var/www/html/web
 
+# Switch to root so we can do root things
 USER root
-RUN apk add --no-cache postgresql-client git
-COPY .docker/default.conf /etc/nginx/conf.d/default.conf
+
+# Install PHP extensions
+RUN install-php-extensions gd imagick/imagick@master iconv intl
+
+# Install Node.js v20
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y nodejs
+
+# Copy this entire project structure to the web root
+COPY --chown=www-data:www-data . /var/www/html
+
 USER www-data
 
-COPY --chown=www-data:www-data . .
-COPY --chown=www-data:www-data --from=composer /app/vendor/ ./vendor/
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+# Install npm dependencies and build
+RUN npm install
+RUN npm run build
+
+# Install Composer dependencies and run Craft migrations + project config sync
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN php craft up --interactive=0
