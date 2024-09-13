@@ -18,11 +18,3 @@ RUN apt-get install -y nodejs
 COPY --chown=www-data:www-data . /var/www/html
 
 USER www-data
-
-# Install npm dependencies and build
-RUN npm install
-RUN npm run prod
-
-# Install Composer dependencies and run Craft migrations + project config sync
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-#RUN php craft up --interactive=0
