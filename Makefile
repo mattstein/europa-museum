@@ -2,7 +2,7 @@
 
 update:
 	npm install
-	npm npm run prod
+	npm run prod
 	composer install --no-interaction --optimize-autoloader --no-dev
 	php craft up --interactive=0
 	php craft queue/run --interactive=0
