@@ -1,0 +1,30 @@
+services:
+  app:
+    environment:
+      PHP_FPM_POOL_NAME: "europa_php"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - './storage:/var/www/html/storage'
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthcheck || exit 1
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PHP_FPM_POOL_NAME: "europa_queue"
+    command: ["php", "/var/www/html/craft", "queue/listen", "--verbose", "--color=0"]
+    volumes:
+      - ./storage:/var/www/html/storage
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthcheck || exit 1
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
