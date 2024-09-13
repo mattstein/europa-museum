@@ -1,5 +1,6 @@
 FROM serversideup/php:8.3-fpm-nginx
 
+# More options: https://serversideup.net/open-source/docker-php/docs/reference/environment-variable-specification
 ENV PHP_OPCACHE_ENABLE=1
 ENV NGINX_WEBROOT=/var/www/html/web
 
@@ -20,7 +21,7 @@ USER www-data
 
 # Install npm dependencies and build
 RUN npm install
-RUN npm run build
+RUN npm run prod
 
 # Install Composer dependencies and run Craft migrations + project config sync
 RUN composer install --no-interaction --optimize-autoloader --no-dev
