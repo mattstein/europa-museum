@@ -18,3 +18,5 @@ RUN apt-get install -y nodejs
 COPY --chown=www-data:www-data . /var/www/html
 
 USER www-data
+
+RUN make update
