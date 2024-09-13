@@ -8,7 +8,7 @@ ENV NGINX_WEBROOT=/var/www/html/web
 USER root
 
 # Install PHP extensions
-RUN install-php-extensions gd imagick/imagick@master iconv intl
+RUN install-php-extensions bcmath gd imagick/imagick@master iconv intl json reflection spl
 
 # Install Node.js v20
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
