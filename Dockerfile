@@ -25,4 +25,4 @@ RUN npm run prod
 
 # Install Composer dependencies and run Craft migrations + project config sync
 RUN composer install --no-interaction --optimize-autoloader --no-dev
-RUN php craft up --interactive=0
+#RUN php craft up --interactive=0
